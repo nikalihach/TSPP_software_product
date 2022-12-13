@@ -6,18 +6,20 @@ using System.Threading.Tasks;
 
 namespace TSPP
 {
-    class Client //Замовник
+    public class Client : general_information //Клієнт
     {
-        public Client (String name, string address, int order)
+        public Client(String name_client, string address_client, uint order)
         {
-            this.name = name;
+            name_client = removing_extra_spaces(name_client);
+            address_client = removing_extra_spaces(address_client);
+            name_client = fix_the_registry(name_client);
+            address_client = fix_the_registry(address_client);
+            this.name = name_client;
             this.order = order;
-            this.address = address;
+            this.address = address_client;
         }
 
-        public String name;
-        public String address;
-        public int order; //потреби споживача
+        public uint order; //потреби споживача
 
         ~Client()
         {

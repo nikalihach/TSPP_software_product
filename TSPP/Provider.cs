@@ -6,25 +6,26 @@ using System.Threading.Tasks;
 
 namespace TSPP
 {
-   
-    class Provider
+
+    public class Provider : general_information
     {
-        public Provider(String name, String address, int supply, double cost) //Поставщик
+        public Provider(String name_provider, String address_provider, uint supply, double cost) //Постачальник
         {
-            this.name = name;
-            this.address = address;
+            name_provider = removing_extra_spaces(name_provider);
+            address_provider = removing_extra_spaces(address_provider);
+            name_provider = fix_the_registry(name_provider);
+            address_provider = fix_the_registry(address_provider);
+            this.name = name_provider;
+            this.address = address_provider;
             this.supply = supply;
             this.cost = cost;
         }
 
-       public String name;
-       public  String address;
-       public int supply; //Запасы
-       public double cost; //Стоимость товара
+        public uint supply; //Запаси
+        public double cost; //Вартість товару
 
         ~Provider()
         {
-
         }
     }
 }

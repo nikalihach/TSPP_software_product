@@ -15,16 +15,30 @@ namespace TSPP
 {
     internal class Interface
     {
-        public void pictureBox_MouseEnter(PictureBox pictureBox, Label label)
+        public void pictureBox_MouseEnter(PictureBox pictureBox, Label label, int x)
         {
-            pictureBox.Location = new Point(pictureBox.Location.X + 10, pictureBox.Location.Y);
-            label.Location = new Point(label.Location.X + 10, label.Location.Y);
+            pictureBox.Location = new Point(pictureBox.Location.X + x, pictureBox.Location.Y);
+            label.Location = new Point(label.Location.X + x, label.Location.Y);
         }
 
-        public void pictureBox_MouseLeave(PictureBox pictureBox, Label label)
+        public void pictureBox_MouseLeave(PictureBox pictureBox, Label label, int x)
         {
-            pictureBox.Location = new Point(pictureBox.Location.X - 10, pictureBox.Location.Y);
-            label.Location = new Point(label.Location.X - 10, label.Location.Y);
+            pictureBox.Location = new Point(pictureBox.Location.X - x, pictureBox.Location.Y);
+            label.Location = new Point(label.Location.X - x, label.Location.Y);
+        }
+
+        public void pictureBox_MouseEnter_button(PictureBox pictureBox, Label label, int size, int x)
+        {
+            pictureBox.Size = new Size(pictureBox.Size.Width + size, pictureBox.Size.Height + size);
+            label.Location = new Point(label.Location.X - x, label.Location.Y);
+            label.ForeColor = Color.Red;
+        }
+
+        public void pictureBox_MouseLeave_button(PictureBox pictureBox, Label label, int size, int x)
+        {
+            pictureBox.Size = new Size(pictureBox.Size.Width - size, pictureBox.Size.Height - size);
+            label.Location = new Point(label.Location.X + x, label.Location.Y);
+            label.ForeColor = Color.DarkGray;
         }
     }
 }
