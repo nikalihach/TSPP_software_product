@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Tulpep.NotificationWindow;
 using System.Data.OleDb;
 using System.Data.SqlClient;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace TSPP
 {
@@ -338,14 +339,14 @@ namespace TSPP
 
                     dt_provider.Rows.Add(datarow);
 
-                  //  if (dt_provider.GetChanges() == null)
-                   //     return;
+                    if (dt_provider.GetChanges() == null)
+                       return;
 
-                   // OleDbCommandBuilder commandBuilder = new OleDbCommandBuilder(adapter_provider)
-                   // { QuotePrefix = "[", QuoteSuffix = "]" };
-                   // commandBuilder.ConflictOption = ConflictOption.OverwriteChanges;
+                    OleDbCommandBuilder commandBuilder = new OleDbCommandBuilder(adapter_provider)
+                    { QuotePrefix = "[", QuoteSuffix = "]" };
+                    commandBuilder.ConflictOption = ConflictOption.OverwriteChanges;
 
-                   // adapter_provider.Update(dt_provider);
+                    adapter_provider.Update(dt_provider);
                     Hiding_the_add_provider_panel();
                 }
 
@@ -454,8 +455,9 @@ namespace TSPP
                     }
 
                     panel4.Visible = true;
-                    pictureBox32.Visible = true;
-                    label13.Text = "Оновити таблицю";
+                   // pictureBox32.Visible = true;
+                   //label13.Text = "Оновити таблицю";
+                   label13.Visible = false;
                     pictureBox15.Visible = false;
                 }
 
@@ -536,15 +538,32 @@ namespace TSPP
 
         private void pictureBox22_Click(object sender, EventArgs e) //Видалення Постачальників
         {
+            OleDbCommand select = new OleDbCommand();
+            select.Connection = myConnection;
+            select.CommandType = CommandType.Text;
+           
             try
             {
                 int ind = dataGridView1.SelectedCells[0].RowIndex;
+                
+                string sqlselect = "DELETE FROM Постачальники WHERE [Ім'я] = '"+dataGridView1.Rows[ind].Cells[0].Value+"';";
+                select.CommandText = sqlselect;
+                OleDbDataAdapter adapter = new OleDbDataAdapter(select);
+                adapter.Fill(dt_provider);
+
                 dataGridView1.Rows.RemoveAt(ind);
                 provider.RemoveAt(ind);
                 index_provider--;
+                // dt_provider.Rows[ind].Delete();
+                //adapter_provider.Update(dt_provider);
+                dataGridView3.Rows.Clear();
 
-                dt_provider.Rows[ind].Delete();
-                adapter_provider.Update(dt_provider);
+                for (int i = dataGridView3.Columns.Count-1; i >0; i--)
+                {
+                    dataGridView3.Columns.RemoveAt(i);
+                }
+                label13.Visible = true;
+                pictureBox15.Visible = true;
 
             }
             catch(Exception ex)
@@ -678,15 +697,34 @@ namespace TSPP
 
         private void pictureBox30_Click(object sender, EventArgs e) // Видалення Замовників
         {
+            OleDbCommand select = new OleDbCommand();
+            select.Connection = myConnection;
+            select.CommandType = CommandType.Text;
+
             try
             {
                 int ind = dataGridView2.SelectedCells[0].RowIndex;
+
+                string sqlselect = "DELETE FROM Замовники WHERE [Ім'я] = '" + dataGridView2.Rows[ind].Cells[0].Value + "';";
+                select.CommandText = sqlselect;
+                OleDbDataAdapter adapter = new OleDbDataAdapter(select);
+                adapter.Fill(dt_client);
+
                 dataGridView2.Rows.RemoveAt(ind);
                 client.RemoveAt(ind);
                 index_client--;
 
-                dt_client.Rows[ind].Delete();
-                adapter_client.Update(dt_client);
+                dataGridView3.Rows.Clear();
+
+                for (int i = dataGridView3.Columns.Count - 1; i > 0; i--)
+                {
+                    dataGridView3.Columns.RemoveAt(i);
+                }
+
+                label13.Visible = true;
+                pictureBox15.Visible = true;
+                //dt_client.Rows[ind].Delete();
+                //adapter_client.Update(dt_client);
             }
             catch (Exception ex)
             {
@@ -810,6 +848,7 @@ namespace TSPP
         List<Expenses> expenses = new List<Expenses>();
         private void pictureBox33_Click(object sender, EventArgs e)
         {
+            expenses.Clear();
             try
             {
                 double[] product_costs = new double[provider.Count];
@@ -829,6 +868,7 @@ namespace TSPP
                         expenses[index_expenses].fuel_spending[i, j - 1] = Convert.ToDouble(dataGridView3[j, i].Value);
                     }
                 }
+                expenses[index_expenses].Save_expenses_to_file(expenses[index_expenses].fuel_spending, "expenses.txt");
             }
             catch (System.FormatException)
             {
@@ -907,18 +947,37 @@ namespace TSPP
 
         private void pictureBox36_Click(object sender, EventArgs e)
         {
+            /*
+            OleDbDataAdapter adapter;
+            OleDbCommand comm;
+            
+                for (int i = 0; i < client.Count; i++)
+                {
+                    string commText = "ALTER TABLE Витрати ADD COLUMN " + "Client_"+(i+1) + " CHAR(50) NULL";
+                    comm = new OleDbCommand(commText, myConnection);
+                     adapter = new OleDbDataAdapter(comm);
+                    adapter.Fill(dt_expenses);
+                }
+                
+                for(int i=0; i< provider.Count; i++)
+                {
+                    DataRow datarow = dt_expenses.NewRow();
+                    for (int j = 0; j < dataGridView3.ColumnCount; j++)
+                    {
+                        datarow[j] = dataGridView3.Rows[i].Cells[j].Value;
+                    }
+                    dt_expenses.Rows.Add(datarow);
+                }
 
+            if (dt_expenses.GetChanges() == null)
+                return;
 
-            string commText = "ALTER TABLE Замовники ADD COLUMN newField CHAR(10) NULL";
-            try
-            {
-                OleDbCommand comm = new OleDbCommand(commText, myConnection);
-                // myConnection.Open();
-                comm.ExecuteNonQuery();
-            }
-            catch { }
+            OleDbCommandBuilder commandBuilder = new OleDbCommandBuilder(adapter_expenses)
+            { QuotePrefix = "[", QuoteSuffix = "]" };
 
-
+            commandBuilder.ConflictOption = ConflictOption.OverwriteChanges;
+            adapter_expenses.Update(dt_expenses);
+            */
         }
 
         private void pictureBox37_Click(object sender, EventArgs e) // Зберегти зміни - Постачальники
@@ -931,6 +990,8 @@ namespace TSPP
             update_datatable_client();
         }
 
+        DataTable dt_expenses;
+        OleDbDataAdapter adapter_expenses;
         private void Form1_Load(object sender, EventArgs e)
         {
             string sql_select = "SELECT * FROM Постачальники";
@@ -965,7 +1026,15 @@ namespace TSPP
                 dataGridView2.Rows[i].Cells[2].Value = Convert.ToUInt32(dt_client.Rows[i][2]);
             }
 
-        }
+            // string sql_select3 = "SELECT * FROM Витрати";
+            //(dt_expenses, adapter_expenses) = Creation_datatable(dt_expenses, adapter_expenses, myConnection, sql_select3);
+
+            
+
+
+          }
+
+        
         Report report;
         private void pictureBox18_Click(object sender, EventArgs e)
         {
@@ -1020,6 +1089,70 @@ namespace TSPP
             {
                 MessageBox.Show("Файл успішно збережено!");
             }
+        }
+
+        private void tabPage3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox18_Click_1(object sender, EventArgs e)
+        {
+           
+        }
+
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            /*
+            try
+            {
+                if (provider.Count != 0 && client.Count != 0)
+                {
+
+                    double[] product_costs = new double[provider.Count];
+
+                    for (int i = 0; i < provider.Count; i++)
+                    {
+                        product_costs[i] = provider[i].cost;
+                    }
+
+                    expenses.Add(new Expenses(product_costs));
+
+                    double[,] expenses_general = new double[provider.Count, client.Count];
+                    expenses_general = expenses[index_expenses].Recording_expenses_from_a_file(expenses_general);
+                    dataGridView3.RowCount = provider.Count;
+                    dataGridView3.ColumnCount = client.Count + 1;
+
+                    for (int i = 0; i < provider.Count; i++)
+                    {
+                        for (int j = 1; j < client.Count + 1; j++)
+                        {
+                            dataGridView3.Rows[i].Cells[j].Value = expenses_general[i, j - 1];
+                        }
+                    }
+
+                    pictureBox33_Click(sender, e);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            */
+        }
+
+        private void pictureBox34_Click(object sender, EventArgs e)
+        {
+           dataGridView3.Rows.Clear();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            panel6.Visible = true;
+            panel5.Visible = false;
+            label19.Visible = false;
+            button3.Visible = false;
         }
     }
 

@@ -8,7 +8,7 @@ namespace TSPP
 {
     public class Client : general_information //Клієнт
     {
-        public Client(String name_client, string address_client, uint order)
+        public Client(string name_client, string address_client, uint order)
         {
             name_client = removing_extra_spaces(name_client);
             address_client = removing_extra_spaces(address_client);
@@ -25,4 +25,8 @@ namespace TSPP
         {
         }
     }
+
+    
+
+
 }
