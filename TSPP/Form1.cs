@@ -17,6 +17,7 @@ namespace TSPP
     public partial class Form1 : Form
     {
         public static string connectString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source = BD.mdb;";
+
         private OleDbConnection myConnection;
 
         public Form1()
@@ -299,7 +300,6 @@ namespace TSPP
         {
             flowLayoutPanel1.Visible = true;
             // textBox1.Focus();
-
         }
 
         static int index_provider = 0;
@@ -335,7 +335,6 @@ namespace TSPP
                     {
                         datarow[i] = row.Cells[i].Value;
                     }
-
 
                     dt_provider.Rows.Add(datarow);
 
@@ -420,7 +419,6 @@ namespace TSPP
                 catch (System.FormatException)
                 {
                     MessageBox.Show("Введено не правильний формат даних! ");
-
                 }
                 catch (System.Data.ConstraintException)
                 {
@@ -428,7 +426,6 @@ namespace TSPP
                     dataGridView2.Rows.Remove(row);
                     index_client--;
                     client.RemoveAt(index_client);
-
                 }
             }
         }
@@ -843,7 +840,6 @@ namespace TSPP
             button_page.pictureBox_MouseLeave_button(pictureBox33, label18, 2, 4);
         }
 
-
         static int index_expenses = 0;
         List<Expenses> expenses = new List<Expenses>();
         private void pictureBox33_Click(object sender, EventArgs e)
@@ -902,7 +898,7 @@ namespace TSPP
         //List<OptimalPlan> plan = new List<OptimalPlan>();
 
         OptimalPlan plan;
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e) // Розрахунок оптимального плану
         {
             try
             {
@@ -990,8 +986,8 @@ namespace TSPP
             update_datatable_client();
         }
 
-        DataTable dt_expenses;
-        OleDbDataAdapter adapter_expenses;
+       // DataTable dt_expenses;
+        //OleDbDataAdapter adapter_expenses;
         private void Form1_Load(object sender, EventArgs e)
         {
             string sql_select = "SELECT * FROM Постачальники";
@@ -1008,7 +1004,6 @@ namespace TSPP
                 dataGridView1.Rows[i].Cells[1].Value = Convert.ToString(dt_provider.Rows[i][1]);
                 dataGridView1.Rows[i].Cells[2].Value = Convert.ToUInt32(dt_provider.Rows[i][2]);
                 dataGridView1.Rows[i].Cells[3].Value = Convert.ToDouble(dt_provider.Rows[i][3]);
-
             }
 
             string sql_select2 = "SELECT * FROM Замовники";
@@ -1029,9 +1024,6 @@ namespace TSPP
             // string sql_select3 = "SELECT * FROM Витрати";
             //(dt_expenses, adapter_expenses) = Creation_datatable(dt_expenses, adapter_expenses, myConnection, sql_select3);
 
-            
-
-
           }
 
         
@@ -1047,7 +1039,7 @@ namespace TSPP
             string [] provider_adressess = new string [provider.Count];
             string [] client_adressess = new string [client.Count];
 
-            for( int i = 0; i<provider.Count; i++)
+            for( int i = 0; i< provider_adressess.Length; i++)
             {
                 provider_adressess[i] = provider[i].return_address();
             }
@@ -1067,6 +1059,7 @@ namespace TSPP
             button1.Visible = true;
             textBox8.Visible = true;
         }
+
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -1090,17 +1083,6 @@ namespace TSPP
                 MessageBox.Show("Файл успішно збережено!");
             }
         }
-
-        private void tabPage3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pictureBox18_Click_1(object sender, EventArgs e)
-        {
-           
-        }
-
 
         private void button4_Click(object sender, EventArgs e)
         {
@@ -1153,6 +1135,8 @@ namespace TSPP
             panel5.Visible = false;
             label19.Visible = false;
             button3.Visible = false;
+            button1.Visible = false;
+            textBox8.Visible = false;
         }
     }
 
